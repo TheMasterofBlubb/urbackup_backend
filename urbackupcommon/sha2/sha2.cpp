@@ -35,6 +35,8 @@
 #include <assert.h>	/* assert() */
 #include "sha2.h"
 
+#define GCC_FMV_ATTR __attribute__((target_clones("avx2", "avx", "sse4.2", "ssse3", "sse3", "mmx", "default")))
+
 #ifdef DO_NOT_USE_CRYPTOPP_SHA
 
 
@@ -339,6 +341,7 @@ static const char *sha2_hex_digits = "0123456789abcdef";
 
 
 /*** SHA-256: *********************************************************/
+GCC_FMV_ATTR
 void SHA256_Init(SHA256_CTX* context) {
 	if (context == (SHA256_CTX*)0) {
 		return;
@@ -385,6 +388,7 @@ void SHA256_Init(SHA256_CTX* context) {
 	(h) = T1 + Sigma0_256(a) + Maj((a), (b), (c)); \
 	j++
 
+GCC_FMV_ATTR
 void SHA256_Transform(SHA256_CTX* context, const sha2_word32* data) {
 	sha2_word32	a, b, c, d, e, f, g, h, s0, s1;
 	sha2_word32	T1, *W256;
@@ -443,6 +447,7 @@ void SHA256_Transform(SHA256_CTX* context, const sha2_word32* data) {
 
 #else /* SHA2_UNROLL_TRANSFORM */
 
+GCC_FMV_ATTR
 void SHA256_Transform(SHA256_CTX* context, const sha2_word32* data) {
 	sha2_word32	a, b, c, d, e, f, g, h, s0, s1;
 	sha2_word32	T1, T2, *W256;
@@ -523,6 +528,7 @@ void SHA256_Transform(SHA256_CTX* context, const sha2_word32* data) {
 
 #endif /* SHA2_UNROLL_TRANSFORM */
 
+GCC_FMV_ATTR
 void SHA256_Update(SHA256_CTX* context, const sha2_byte *data, size_t len) {
 	unsigned int	freespace, usedspace;
 
@@ -572,6 +578,7 @@ void SHA256_Update(SHA256_CTX* context, const sha2_byte *data, size_t len) {
 	usedspace = freespace = 0;
 }
 
+GCC_FMV_ATTR
 void SHA256_Final(sha2_byte digest[], SHA256_CTX* context) {
 	sha2_word32	*d = (sha2_word32*)digest;
 	unsigned int	usedspace;
@@ -637,6 +644,7 @@ void SHA256_Final(sha2_byte digest[], SHA256_CTX* context) {
 	usedspace = 0;
 }
 
+GCC_FMV_ATTR
 char *SHA256_End(SHA256_CTX* context, char buffer[]) {
 	sha2_byte	digest[SHA256_DIGEST_LENGTH], *d = digest;
 	int		i;
@@ -661,6 +669,7 @@ char *SHA256_End(SHA256_CTX* context, char buffer[]) {
 	return buffer;
 }
 
+GCC_FMV_ATTR
 char* SHA256_Data(const sha2_byte* data, size_t len, char digest[SHA256_DIGEST_STRING_LENGTH]) {
 	SHA256_CTX	context;
 
@@ -671,6 +680,7 @@ char* SHA256_Data(const sha2_byte* data, size_t len, char digest[SHA256_DIGEST_S
 
 
 /*** SHA-512: *********************************************************/
+GCC_FMV_ATTR
 void SHA512_Init(SHA512_CTX* context) {
 	if (context == (SHA512_CTX*)0) {
 		return;
@@ -716,6 +726,7 @@ void SHA512_Init(SHA512_CTX* context) {
 	(h) = T1 + Sigma0_512(a) + Maj((a), (b), (c)); \
 	j++
 
+GCC_FMV_ATTR
 void SHA512_Transform(SHA512_CTX* context, const sha2_word64* data) {
 	sha2_word64	a, b, c, d, e, f, g, h, s0, s1;
 	sha2_word64	T1, *W512 = (sha2_word64*)context->buffer;
@@ -771,6 +782,7 @@ void SHA512_Transform(SHA512_CTX* context, const sha2_word64* data) {
 
 #else /* SHA2_UNROLL_TRANSFORM */
 
+GCC_FMV_ATTR
 void SHA512_Transform(SHA512_CTX* context, const sha2_word64* data) {
 	sha2_word64	a, b, c, d, e, f, g, h, s0, s1;
 	sha2_word64	T1, T2, *W512 = (sha2_word64*)context->buffer;
@@ -849,6 +861,7 @@ void SHA512_Transform(SHA512_CTX* context, const sha2_word64* data) {
 
 #endif /* SHA2_UNROLL_TRANSFORM */
 
+GCC_FMV_ATTR
 void SHA512_Update(SHA512_CTX* context, const sha2_byte *data, size_t len) {
 	unsigned int	freespace, usedspace;
 
@@ -898,6 +911,7 @@ void SHA512_Update(SHA512_CTX* context, const sha2_byte *data, size_t len) {
 	usedspace = freespace = 0;
 }
 
+GCC_FMV_ATTR
 void SHA512_Last(SHA512_CTX* context) {
 	unsigned int	usedspace;
 
@@ -941,6 +955,7 @@ void SHA512_Last(SHA512_CTX* context) {
 	SHA512_Transform(context, (sha2_word64*)context->buffer);
 }
 
+GCC_FMV_ATTR
 void SHA512_Final(sha2_byte digest[], SHA512_CTX* context) {
 	sha2_word64	*d = (sha2_word64*)digest;
 
@@ -970,6 +985,7 @@ void SHA512_Final(sha2_byte digest[], SHA512_CTX* context) {
 	MEMSET_BZERO(context, sizeof(SHA512_CTX));
 }
 
+GCC_FMV_ATTR
 char *SHA512_End(SHA512_CTX* context, char buffer[]) {
 	sha2_byte	digest[SHA512_DIGEST_LENGTH], *d = digest;
 	int		i;
@@ -994,6 +1010,7 @@ char *SHA512_End(SHA512_CTX* context, char buffer[]) {
 	return buffer;
 }
 
+GCC_FMV_ATTR
 char* SHA512_Data(const sha2_byte* data, size_t len, char digest[SHA512_DIGEST_STRING_LENGTH]) {
 	SHA512_CTX	context;
 
@@ -1004,6 +1021,7 @@ char* SHA512_Data(const sha2_byte* data, size_t len, char digest[SHA512_DIGEST_S
 
 
 /*** SHA-384: *********************************************************/
+GCC_FMV_ATTR
 void SHA384_Init(SHA384_CTX* context) {
 	if (context == (SHA384_CTX*)0) {
 		return;
@@ -1013,10 +1031,12 @@ void SHA384_Init(SHA384_CTX* context) {
 	context->bitcount[0] = context->bitcount[1] = 0;
 }
 
+GCC_FMV_ATTR
 void SHA384_Update(SHA384_CTX* context, const sha2_byte* data, size_t len) {
 	SHA512_Update((SHA512_CTX*)context, data, len);
 }
 
+GCC_FMV_ATTR
 void SHA384_Final(sha2_byte digest[], SHA384_CTX* context) {
 	sha2_word64	*d = (sha2_word64*)digest;
 
@@ -1046,6 +1066,7 @@ void SHA384_Final(sha2_byte digest[], SHA384_CTX* context) {
 	MEMSET_BZERO(context, sizeof(SHA384_CTX));
 }
 
+GCC_FMV_ATTR
 char *SHA384_End(SHA384_CTX* context, char buffer[]) {
 	sha2_byte	digest[SHA384_DIGEST_LENGTH], *d = digest;
 	int		i;
@@ -1070,6 +1091,7 @@ char *SHA384_End(SHA384_CTX* context, char buffer[]) {
 	return buffer;
 }
 
+GCC_FMV_ATTR
 char* SHA384_Data(const sha2_byte* data, size_t len, char digest[SHA384_DIGEST_STRING_LENGTH]) {
 	SHA384_CTX	context;
 
@@ -1082,44 +1104,52 @@ char* SHA384_Data(const sha2_byte* data, size_t len, char digest[SHA384_DIGEST_S
 }
 #endif /* __cplusplus */
 
+GCC_FMV_ATTR
 void sha256_init(sha256_ctx * ctx)
 {
 	SHA256_Init(ctx);
 }
 
+GCC_FMV_ATTR
 void sha256_update(sha256_ctx *ctx, const unsigned char *message,
 	unsigned int len)
 {
 	SHA256_Update(ctx, message, len);
 }
 
+GCC_FMV_ATTR
 void sha256_final(sha256_ctx *ctx, unsigned char *digest)
 {
 	SHA256_Final(digest, ctx);
 }
 
+GCC_FMV_ATTR
 void sha256(const unsigned char *message, unsigned int len,
 	unsigned char *digest)
 {
 	SHA256_Data(message, len, reinterpret_cast<char*>(digest));
 }
 
+GCC_FMV_ATTR
 void sha512_init(sha512_ctx *ctx)
 {
 	SHA512_Init(ctx);
 }
 
+GCC_FMV_ATTR
 void sha512_update(sha512_ctx *ctx, const unsigned char *message,
 	unsigned int len)
 {
 	SHA512_Update(ctx, message, len);
 }
 
+GCC_FMV_ATTR
 void sha512_final(sha512_ctx *ctx, unsigned char *digest)
 {
 	SHA512_Final(digest, ctx);
 }
 
+GCC_FMV_ATTR
 void sha512(const unsigned char *message, unsigned int len,
 	unsigned char *digest)
 {
@@ -1128,38 +1158,45 @@ void sha512(const unsigned char *message, unsigned int len,
 
 #else //!DO_NOT_USE_CRYPTOPP_SHA
 
+GCC_FMV_ATTR
 void sha256_init(sha256_ctx * ctx)
 {
 	ctx->sha.Restart();
 }
 
+GCC_FMV_ATTR
 void sha256_update(sha256_ctx *ctx, const unsigned char *message,
 	unsigned int len)
 {
 	ctx->sha.Update(message, len);
 }
 
+GCC_FMV_ATTR
 void sha256_final(sha256_ctx *ctx, unsigned char *digest)
 {
 	ctx->sha.Final(digest);
 }
 
+GCC_FMV_ATTR
 void sha512_init(sha512_ctx *ctx)
 {
 	ctx->sha.Restart();
 }
 
+GCC_FMV_ATTR
 void sha512_update(sha512_ctx *ctx, const unsigned char *message,
 	unsigned int len)
 {
 	ctx->sha.Update(message, len);
 }
 
+GCC_FMV_ATTR
 void sha512_final(sha512_ctx *ctx, unsigned char *digest)
 {
 	ctx->sha.Final(digest);
 }
 
+GCC_FMV_ATTR
 void sha512(const unsigned char *message, unsigned int len,
 	unsigned char *digest)
 {
@@ -1170,6 +1207,7 @@ void sha512(const unsigned char *message, unsigned int len,
 	sha512_final(&ctx, digest);
 }
 
+GCC_FMV_ATTR
 void sha256(const unsigned char *message, unsigned int len, unsigned char *digest)
 {
 	sha256_ctx ctx;
