@@ -19,6 +19,8 @@ jobs:
       run: ./switch_build.sh server && autoreconf --install
     - name: configure (server)
       run: ./configure --with-mountvhd
+    - name: check gcc
+      run: gcc --version
     - name: make (server)
       run: make -j$((`nproc`+1))
     - name: autoconf (client)
